@@ -10,8 +10,6 @@ import re
 import struct
 import os
 import urllib.request
-global num
-num = 1
 class bilibiliClient():
     def __init__(self):
         self._CIDInfoUrl = 'http://live.bilibili.com/api/player?id=cid:'
@@ -140,7 +138,7 @@ class bilibiliClient():
             isVIP = dic['info'][2][3] == '1'
             if str2 == 0:
                 music_url = self.getMp3Url(commentText)
-                self.Download_Mp3(music_url)
+                self.Download_Mp3(music_url, commentText)
             if isAdmin:
                 commentUser = '管理员 ' + commentUser
             if isVIP:
@@ -171,18 +169,22 @@ class bilibiliClient():
     def getMp3Url(self, commentText):
         music = urllib.request.quote(commentText[2:len(commentText)])
         url = 'http://songsearch.kugou.com/song_search_v2?callback=jQuery233_2333&keyword='+music+'&page=1&pagesize=30&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0'
+        print(url)
         socket = urllib.request.urlopen(url)
         content = str(socket.read())
         socket.close()
         tmp1 = 'AlbumID'
         tmp2 = content.find(tmp1)
         tmp2 += 10
-        AlbumID = content[tmp2:tmp2+7]
+        tmp1 = '","ResFileHash"'
+        tmp3 = content.find(tmp1)
+        AlbumID = content[tmp2:tmp3]
         tmp1 = '"FileHash":"'
         tmp2 = content.find(tmp1)
         tmp2 += 12
         FileHash = content[tmp2:tmp2+32]
         url = 'http://www.kugou.com/yy/index.php?r=play/getdata&hash='+FileHash+'&album_id='+AlbumID
+        print(url)
         socket = urllib.request.urlopen(url)
         content = str(socket.read())
         socket.close()
@@ -195,17 +197,25 @@ class bilibiliClient():
         tmp2 = mp3_url.replace('\\', '')
         mp3_url = tmp2
         return(mp3_url)
-    def Download_Mp3(self, mp3_url):
-        global num
-        if num < 20:
-            print('asd')
-            local = os.path.join('/home/pi/mp3', str(num) + '.mp3')
-            num += 1
+    def Download_Mp3(self, mp3_url, commentText):
+        count = -1
+        filename = '/home/jele/1'
+        for count,line in enumerate(open(filename,'rU')):
+            pass
+        count+=1
+        mp3_name = commentText[2:len(commentText)]
+        if count < 20:
+            openfile = open(filename,'a+')
+            openfile.write('mp3_name = ' + mp3_name + 'mp3_url = ' + mp3_url +'\n')
+            openfile.close()
+            local = os.path.join('/home/jele/mp3', str(count) + '.mp3')
             urllib.request.urlretrieve(mp3_url, local)
             print('Download OK')
         else:
-            num = 1
-            local = os.path.join('/home/pi/mp3', str(num) + '.mp3')
-            num += 1
+            count = int(1)
+            openfile = open(filename, 'w+')
+            openfile.write('mp3_name = ' + mp3_name + 'mp3_url = ' + mp3_url +'\n')
+            openfile.close()
+            local = os.path.join('/home/jele/mp3', str(count) + '.mp3')
             urllib.request.urlretrieve(mp3_url, local)
             print('Download OK')
