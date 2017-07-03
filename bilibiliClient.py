@@ -173,12 +173,16 @@ class bilibiliClient():
         socket = urllib.request.urlopen(url)
         content = str(socket.read())
         socket.close()
-        tmp1 = 'AlbumID'
-        tmp2 = content.find(tmp1)
-        tmp2 += 10
-        tmp1 = '","ResFileHash"'
-        tmp3 = content.find(tmp1)
-        AlbumID = content[tmp2:tmp3]
+        #tmp1 = 'AlbumID'
+        #tmp2 = content.find(tmp1)
+        #tmp2 += 10
+        #tmp1 = '","ResFileHash"'
+        #tmp3 = content.find(tmp1)
+        #AlbumID = content[tmp2:tmp3]
+        #后来发觉用正则才是正确用法
+        tmp = re.search('AlbumID":"(.+?)","', content)
+        AlbumID = tmp.group(1)
+        #咳咳 filehash长度应该不会变的那就这样吧
         tmp1 = '"FileHash":"'
         tmp2 = content.find(tmp1)
         tmp2 += 12
