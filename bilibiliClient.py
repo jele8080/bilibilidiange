@@ -169,7 +169,7 @@ class bilibiliClient():
     def getMp3Url(self, commentText):
         music = urllib.request.quote(commentText[2:len(commentText)])
         url = 'http://songsearch.kugou.com/song_search_v2?callback=jQuery233_2333&keyword='+music+'&page=1&pagesize=30&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0'
-        print(url)
+        #print(url)
         socket = urllib.request.urlopen(url)
         content = str(socket.read())
         socket.close()
@@ -188,7 +188,7 @@ class bilibiliClient():
         tmp2 += 12
         FileHash = content[tmp2:tmp2+32]
         url = 'http://www.kugou.com/yy/index.php?r=play/getdata&hash='+FileHash+'&album_id='+AlbumID
-        print(url)
+        #print(url)
         socket = urllib.request.urlopen(url)
         content = str(socket.read())
         socket.close()
@@ -203,14 +203,14 @@ class bilibiliClient():
         return(mp3_url)
     def Download_Mp3(self, mp3_url, commentText):
         count = -1
-        filename = '/home/jele/1'
+        filename = '/home/jele/mp3/log.cout'
         for count,line in enumerate(open(filename,'rU')):
             pass
-        count+=1
+        count+=2
         mp3_name = commentText[2:len(commentText)]
-        if count < 20:
+        if count < 21:
             openfile = open(filename,'a+')
-            openfile.write('mp3_name = ' + mp3_name + 'mp3_url = ' + mp3_url +'\n')
+            openfile.write('mp3_name = ' + mp3_name + 'mp3_url = ' + mp3_url +' handle = no\n')
             openfile.close()
             local = os.path.join('/home/jele/mp3', str(count) + '.mp3')
             urllib.request.urlretrieve(mp3_url, local)
@@ -218,7 +218,7 @@ class bilibiliClient():
         else:
             count = int(1)
             openfile = open(filename, 'w+')
-            openfile.write('mp3_name = ' + mp3_name + 'mp3_url = ' + mp3_url +'\n')
+            openfile.write('mp3_name = ' + mp3_name + 'mp3_url = ' + mp3_url +' handle = no\n')
             openfile.close()
             local = os.path.join('/home/jele/mp3', str(count) + '.mp3')
             urllib.request.urlretrieve(mp3_url, local)
